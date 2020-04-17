@@ -1,6 +1,4 @@
-REACT -> ReactJS (web) & React Native (Mobile) 
-Node/NPM -> Javascript
-----
+
 ngày 1 ------ ấdfasfasdfsadf
 ngày 2 ----
 ....
