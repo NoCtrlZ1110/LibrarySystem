@@ -4,7 +4,7 @@ include_once "../model/connect.php";
 class Book {
     public $connect;
     public $bookID;
-    public function __construct($connect, $bookID){
+    public function __construct(mysqli $connect, $bookID){
         $this->connect = $connect;
         $this->bookID = $bookID;
     }
@@ -43,5 +43,32 @@ class Book {
         if (isset($returnDate) && strlen($returnDate) < 10 && strlen($returnDate) > 0) return false;
         if (!empty($returnDate) && strlen($returnDate) == 10) return true;
         return true;
+    }
+    public function updateName($name) {
+        if (empty($name)) return false;
+        $updateQuery = "UPDATE books SET name ='$name' WHERE bookID = '$this->bookID'";
+        if ($this->connect->query($updateQuery) == true) return true;
+        return false;
+    }
+    public function updateAuthorName($authorName) {
+        if (empty($authorName)) return false;
+        $updateQuery = "UPDATE books SET author ='$authorName' WHERE bookID = '$this->bookID'";
+        if ($this->connect->query($updateQuery) ==  true) return true;
+        return false;
+    }
+    public function updatePublishDate($date) {
+        if (empty($date)) return false;
+        $updateQuery = "UPDATE books SET publishDate ='$date' WHERE bookID = '$this->bookID'";
+        if ($this->connect->query($updateQuery) ==  true) return true;
+        return false;
+    }
+    public function updateQuantity($quantity) {
+        $updateQuery = "UPDATE books SET quantity = '$quantity' WHERE bookID = '$this->bookID'";
+        if ($this->connect->query($updateQuery) ==  true) return true;
+        return false;
+    }
+    public function emtyFields($name, $author, $date, $quantity) {
+        if (empty($name) && empty($author) && empty($date) && empty($quantity)) return true;
+        return false;
     }
 }
