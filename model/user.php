@@ -52,7 +52,7 @@ function getInfoCart($studentID, mysqli $connect) {
                      FROM borrowbook
                             INNER JOIN returnbook r ON borrowbook.bookID = r.bookID
                             INNER JOIN books b ON borrowbook.bookID = b.bookID
-                     WHERE borrowbook.studentID = '$studentID'";
+                     WHERE borrowbook.studentID = '$studentID' AND borrowbook.studentID = r.studentID";
         $cartDetail = mysqli_query($connect, $cartQuery);
         return $cartDetail;
 }
