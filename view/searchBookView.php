@@ -4,10 +4,10 @@ include_once "../Objects/Search.php";
 include_once "../Objects/searchBook.php";
 include_once "../model/timeout.php";
 include_once "../model/user.php";
+include_once "../model/validate.php";
 $connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
-if (isset($_SESSION["student"]["id"]) && isset($_SESSION['timeout']) && setTimeOut($_SESSION['timeout'])) header("Location: login.php");
 if (isset($_POST["search"])) {
     $condition = $_POST["name"];
     if (!empty($condition)) {
@@ -15,7 +15,7 @@ if (isset($_POST["search"])) {
         $searchBook = new searchBook($connect, $condition);
         $result = $searchBook->getResult();
         $_SESSION['total'] = mysqli_num_rows($result);
-        header("Location: searchBookView.php?key='$condition'");
+        header("Location: searchBookView.php?key=$condition");
     }
 }
 if (isset($_GET['key']) && !empty($_GET['key'])) {
@@ -23,7 +23,7 @@ if (isset($_GET['key']) && !empty($_GET['key'])) {
     else $currentPage = 1;
     $recordPerPage = 10;
     $start = ($currentPage*$recordPerPage) - $recordPerPage;
-    $condition = $_SESSION['condition'];
+    $condition = $_GET['key'];
     $searchBook = new searchBook($connect, $condition);
     if (isset($_SESSION['total']) && $_SESSION['total'] != 0) {
         $total = $_SESSION['total'];
@@ -33,6 +33,11 @@ if (isset($_GET['key']) && !empty($_GET['key'])) {
     $nextPage = $currentPage + 1;
     $previousPage = $currentPage - 1;
     $limitResult = $searchBook->getLimitResult($start, $recordPerPage);
+}
+if (isset($_GET['name']) && !empty($_GET['name'])) {
+    $condition = $_GET['name'];
+    $searchBook = new searchBook($connect, $condition);
+    $someResult = $searchBook->getResult();
 }
 if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['student']['id'], $connect);
 ?>
@@ -108,35 +113,45 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                             <?php
                                             if (isset($_SESSION['admin'])) {
                                                 ?>
-                                                <li><a href="searchUser.html">Search User</a></li>
+                                                <li><a href="searchUser.php">Search User</a></li>
                                             <?php
                                             }
                                             ?>
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="category.html">Category</a>
+                                        <a href="category.php">Category</a>
                                         <ul class="submenu">
-                                            <li><a href="blog.html">Information Technology</a></li>
-                                            <li><a href="single-blog.html">Law and Social</a></li>
-                                            <li><a href="blog.html">Science and Technology</a></li>
-                                            <li><a href="single-blog.html">Education</a></li>
-                                            <li><a href="blog.html">Philosophy and Life</a></li>
-                                            <li><a href="single-blog.html">Human History</a></li>
+                                            <li><a href="category.php">Information Technology</a></li>
+                                            <li><a href="category.php">Law and Social</a></li>
+                                            <li><a href="category.php">Science and Technology</a></li>
+                                            <li><a href="category.php">Education</a></li>
+                                            <li><a href="category.php">Philosophy and Life</a></li>
+                                            <li><a href="category.php">Human History</a></li>
                                         </ul>
                                     </li>
                                     <?php
-                                    if (isset($_SESSION['student']['id'])) {
+                                    if (isset($_SESSION['student']['id']) || isset($_SESSION['admin'])) {
+                                        if (isset($_SESSION['student']['id'])) {
+                                            ?>
+                                            <li>
+                                                <a style="cursor: pointer;" title="Your books" href="cart.php">
+                                                    <i class="fas fa-book" style="font-size: 20px;">
+                                                        <span class="badge badge-danger"><?php echo $cartDetail->num_rows;?></span>
+                                                    </i>
+                                                </a>
+                                            </li>
+                                            <?php
+                                        } elseif (isset($_SESSION['admin']) && $_SESSION['admin'] == 'uetLicAdmin') {
+                                            ?>
+                                            <li>
+                                                <a style="cursor: pointer;" id="employee">Employee</a>
+                                            </li>
+                                            <?php
+                                        }
                                         ?>
                                         <li>
-                                            <a style="cursor: pointer;" title="Your books" href="cart.php">
-                                                <i class="fas fa-book" style="font-size: 20px;">
-                                                    <span class="badge badge-danger"><?php echo $cartDetail->num_rows;?></span>
-                                                </i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a id="logout" title="Logout" href="../controller/logout.php">
+                                            <a id="logout" title="Logout">
                                                 <i class="fas fa-power-off" style="font-size: 20px;"></i>
                                             </a>
                                         </li>
@@ -149,7 +164,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                     </div>
                     <div class="col-xl-2 col-lg-2 col-md-3">
                         <?php
-                        if (!isset($_SESSION['student']['id'])) {
+                        if ((!isset($_SESSION['student']['id']) && !isset($_SESSION['admin']))) {
                             ?>
                             <div class="header-right-btn f-right d-none d-lg-block">
                                 <a href="login.php" class="btn header-btn">Login</a>
@@ -224,7 +239,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
 </main>
 <div class="container" id="listBook">
     <?php
-    if (isset($limitResult) && mysqli_num_rows($limitResult) > 0 && isset($_SESSION['total'])) {
+    if (isset($limitResult) && mysqli_num_rows($limitResult) > 0 && isset($_SESSION['total']) && !isset($_GET['name'])) {
         ?>
         <div class="alert alert-success alert-dismissible fade show" style="width: 28%; height: 50px;">
             <button type="button" class="close" data-dismiss="alert" style="outline: none;">&times;</button>
@@ -236,15 +251,60 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
             ?>
             <div class="row book">
                 <div class="col col-sm-2">
-                    <a href="borrowView.php?bookID=<?php echo $row['bookID'];?>&cap=<?php echo $row['quantity']; ?>">
-                        <img src="<?php echo '../image/' . $row['image'] . '.jpg'?>" class="image" width="150px" height="200px">
-                    </a>
+                    <?php
+                    if (!isset($_SESSION['admin'])) {
+                        if (intval($row['quantity'] > 0)) {
+                            ?>
+                            <a href="borrowView.php?bookID=<?php echo $row['bookID'];?>&cap=<?php echo $row['quantity']; ?>">
+                                <img src="<?php echo '../image/' . $row['image'] . '.jpg'?>" class="image" width="150px" height="200px">
+                            </a>
+                            <?php
+                        } else {
+                            ?>
+                            <img src="<?php echo '../image/' . $row['image'] . '.jpg'?>" class="image over" width="150px" height="200px" style="cursor: not-allowed" >
+                            <?php
+                        }
+                        ?>
+                        <?php
+                    } else {
+                        ?>
+                        <a href="update.php?bookID=<?php echo $row['bookID'];?>">
+                            <img src="<?php echo '../image/' . $row['image'] . '.jpg'?>" class="image" width="150px" height="200px">
+                        </a>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <div class="col-sm-7">
-                    <a href="borrowView.php?bookID=<?php echo $row['bookID'];?>&cap=<?php echo $row['quantity']; ?>" class="a-custom">
-                        <?php echo $row["name"] . "<br/>"; ?>
-                        <?php echo $row["caption"]; ?>
-                    </a> <br/> <br/>
+                    <?php
+                    if (!isset($_SESSION['admin'])) {
+                        if (intval($row['quantity']) > 0) {
+                            ?>
+                            <a href="borrowView.php?bookID=<?php echo $row['bookID'];?>&cap=<?php echo $row['quantity']; ?>" class="a-custom">
+                                <?php echo $row["name"] . "<br/>"; ?>
+                                <?php echo $row["caption"]; ?>
+                            </a>
+                            <?php
+                        } else {
+                            ?>
+                            <p style="cursor: not-allowed" class="over">
+                                <?php echo $row["name"] . "<br/>"; ?>
+                                <?php echo $row["caption"]; ?>
+                            </p>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                    } else {
+                        ?>
+                        <a href="update.php?bookID=<?php echo $row['bookID'];?>" class="a-custom">
+                            <?php echo $row["name"] . "<br/>"; ?>
+                            <?php echo $row["caption"]; ?>
+                        </a>
+                        <?php
+                    }
+                    ?>
+                    <br/> <br/>
                     <p style="font-family: Arial; font-size: 17px !important;"> <?php echo "Author: " . "<strong>" . $row["author"] . "</strong>"?></p>
                     <p style="font-family: Arial; font-size: 17px !important;"> <?php echo "Publish Date: " . "<strong>" . date("d/m/Y", strtotime($row["publishDate"])) . "</strong>"?></p>
                 </div>
@@ -254,7 +314,25 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                         echo $row['quantity'];
                         ?>
                     </i> <br/>
-                    <button class="btn borrow" type="submit" name="borrow" onclick="window.location.href = 'borrowView.php?bookID=<?php echo $row['bookID'] . '&cap='.$row['quantity'];?>';" formmethod="post">Borrow Book</button>
+                    <?php
+                    if (!isset($_SESSION['admin'])) {
+                        if (intval($row['quantity'] > 0)) {
+                            ?>
+                            <button class="btn borrow" type="submit" name="borrow" onclick="window.location.href = 'borrowView.php?bookID=<?php echo $row['bookID'] . '&cap='.$row['quantity'];?>';" formmethod="post">Borrow Book</button>
+                            <?php
+                        } else {
+                            ?>
+                            <button class="btn borrow over" type="submit" disabled="disabled" style="cursor: not-allowed;">Not Allowed</button>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                    } elseif (isset($_SESSION['admin'])) {
+                        ?>
+                        <button class="btn borrow" type="submit" name="update" onclick="window.location.href = 'update.php?bookID=<?php echo $row['bookID'];?>';" formmethod="post">Up Date</button>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <?php
                 ?>
@@ -262,7 +340,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
             <?php
         }
     }
-    else if ((!isset($limitResult) && isset($_POST["search"])) || (isset($limitResult) && mysqli_num_rows($limitResult) == 0)) {
+     if ((!isset($limitResult) && isset($_POST["search"])) || (isset($limitResult) && mysqli_num_rows($limitResult) == 0)) {
         ?>
         <div class="alert alert-danger alert-dismissible fade show" style="width: 15%; height: 50px;">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -270,6 +348,49 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
         </div>
         <?php
     }
+     if (isset($_GET['name']) && !empty($_GET['name']) && isset($someResult)) {
+         if ($someResult->num_rows > 0) {
+             while ($some = mysqli_fetch_array($someResult)) {
+                 ?>
+                 <div class="row book">
+                     <div class="col col-sm-2">
+                         <a href="borrowView.php?bookID=<?php echo $some['bookID'];?>&cap=<?php echo $some['quantity']; ?>">
+                             <img src="<?php echo '../image/' . $some['image'] . '.jpg'?>" class="image" width="150px" height="200px">
+                         </a>
+                     </div>
+                     <div class="col-sm-7">
+                         <a href="borrowView.php?bookID=<?php echo $some['bookID'];?>&cap=<?php echo $some['quantity']; ?>" class="a-custom">
+                             <?php echo $some["name"] . "<br/>"; ?>
+                             <?php echo $some["caption"]; ?>
+                         </a> <br/> <br/>
+                         <p style="font-family: Arial; font-size: 17px !important;"> <?php echo "Author: " . "<strong>" . $some["author"] . "</strong>"?></p>
+                         <p style="font-family: Arial; font-size: 17px !important;"> <?php echo "Publish Date: " . "<strong>" . date("d/m/Y", strtotime($some["publishDate"])) . "</strong>"?></p>
+                     </div>
+                     <div class="col col-sm-3">
+                         <i class="fas fa-book" style="color: green; font-size: 20px; margin-left: 70px; margin-top: 30px;">
+                             <?php
+                             echo $some['quantity'];
+                             ?>
+                         </i> <br/>
+                         <?php
+                         if (isset($_SESSION['student']['id'])) {
+                             ?>
+                             <button class="btn borrow" type="submit" name="borrow" onclick="window.location.href = 'borrowView.php?bookID=<?php echo $some['bookID'] . '&cap='.$some['quantity'];?>';" formmethod="post">Borrow Book</button>
+                             <?php
+                         } elseif (isset($_SESSION['admin'])) {
+                             ?>
+                             <button class="btn borrow" type="submit" name="update" onclick="window.location.href = 'update.php?bookID=<?php echo $some['bookID'];?>';" formmethod="post">Up Date</button>
+                             <?php
+                         }
+                         ?>
+                     </div>
+                     <?php
+                     ?>
+                 </div>
+    <?php
+             }
+         }
+     }
     ?>
 </div>
 <?php
@@ -340,10 +461,18 @@ if (isset($limitResult) && mysqli_num_rows($limitResult) > 0) {
 <script src="../assets/js/plugins.js"></script>
 <script src="../assets/js/main.js"></script>
 <script>
-    $("#logout").click(function () {
-        if (confirm('Are you sure you want to log out?')) {
-            window.location.replace('index.php');
-        }
+    $(document).ready(function () {
+        $("#logout").click(function () {
+            if (confirm('Are you sure you want to log out?')) {
+                window.location.replace('../controller/logout.php');
+            } else window.location.replace(window.location.href);
+        });
+        $(".over").click(function () {
+            window.alert("This book's quantity less 0");
+        });
+        $("#employee").click(function () {
+            window.location.replace('admin.php');
+        });
     });
 </script>
 </body>

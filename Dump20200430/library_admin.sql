@@ -16,36 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `employee`
+-- Table structure for table `admin`
 --
 
-DROP TABLE IF EXISTS `employee`;
+DROP TABLE IF EXISTS `admin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `employee` (
-  `employeeID` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `shift` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `borrowID` int(11) NOT NULL,
-  `returnID` int(11) NOT NULL,
-  `admin` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`employeeID`),
-  KEY `fk_borrowID` (`borrowID`),
-  KEY `fk_returnID` (`returnID`),
-  KEY `fk_admin` (`admin`),
-  CONSTRAINT `fk_admin` FOREIGN KEY (`admin`) REFERENCES `admin` (`username`),
-  CONSTRAINT `fk_borrowID` FOREIGN KEY (`borrowID`) REFERENCES `borrowbook` (`roundID`),
-  CONSTRAINT `fk_returnID` FOREIGN KEY (`returnID`) REFERENCES `returnbook` (`roundID`)
+CREATE TABLE `admin` (
+  `username` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `employee`
+-- Dumping data for table `admin`
 --
 
-LOCK TABLES `employee` WRITE;
-/*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-/*!40000 ALTER TABLE `employee` ENABLE KEYS */;
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES ('uetLicAdmin','uetLicAdmin');
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -57,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-28  8:25:55
+-- Dump completed on 2020-04-30 12:56:44

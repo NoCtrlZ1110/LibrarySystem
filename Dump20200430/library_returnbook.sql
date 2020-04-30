@@ -16,31 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `students`
+-- Table structure for table `returnbook`
 --
 
-DROP TABLE IF EXISTS `students`;
+DROP TABLE IF EXISTS `returnbook`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `students` (
+CREATE TABLE `returnbook` (
+  `roundID` int(11) NOT NULL AUTO_INCREMENT,
+  `bookID` int(11) NOT NULL,
   `studentID` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
-  `studentName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `dateOfBirth` date NOT NULL,
-  `faculty` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `class` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`studentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `quantity` int(11) NOT NULL,
+  `returnDate` date NOT NULL,
+  `status` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`roundID`),
+  KEY `fk_studentID2` (`studentID`),
+  KEY `fk_bookID2` (`bookID`),
+  CONSTRAINT `fk_bookID2` FOREIGN KEY (`bookID`) REFERENCES `books` (`bookID`),
+  CONSTRAINT `fk_studentID2` FOREIGN KEY (`studentID`) REFERENCES `students` (`studentID`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `students`
+-- Dumping data for table `returnbook`
 --
 
-LOCK TABLES `students` WRITE;
-/*!40000 ALTER TABLE `students` DISABLE KEYS */;
-INSERT INTO `students` VALUES ('18020881','Nguyen Van Manh','2000-07-11','CN1','K63','18020881'),('18020885','Dang Van Manh','2000-08-11','CN1','K63','18020885');
-/*!40000 ALTER TABLE `students` ENABLE KEYS */;
+LOCK TABLES `returnbook` WRITE;
+/*!40000 ALTER TABLE `returnbook` DISABLE KEYS */;
+INSERT INTO `returnbook` VALUES (46,9,'18020881',1,'2020-09-04','NO'),(47,11,'18020881',1,'2020-08-28','NO');
+/*!40000 ALTER TABLE `returnbook` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-28  8:25:55
+-- Dump completed on 2020-04-30 12:56:43

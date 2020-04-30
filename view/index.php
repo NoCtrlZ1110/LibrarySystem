@@ -76,35 +76,46 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                             <?php
                                             if (isset($_SESSION['admin']) || isset($_SESSION['employee'])) {
                                                 ?>
-                                                <li><a href="searchUser.html">Search User</a></li>
+                                                <li><a href="searchUser.php">Search User</a></li>
                                             <?php
                                             }
                                             ?>
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="category.html">Category</a>
+                                        <a href="category.php">Category</a>
                                         <ul class="submenu">
-                                            <li><a href="blog.html">Information Technology</a></li>
-                                            <li><a href="single-blog.html">Law and Social</a></li>
-                                            <li><a href="blog.html">Science and Technology</a></li>
-                                            <li><a href="single-blog.html">Education</a></li>
-                                            <li><a href="blog.html">Philosophy and Life</a></li>
-                                            <li><a href="single-blog.html">Human History</a></li>
+                                            <li><a href="category.php">Information Technology</a></li>
+                                            <li><a href="category.php">Law and Social</a></li>
+                                            <li><a href="category.php">Science and Technology</a></li>
+                                            <li><a href="category.php">Education</a></li>
+                                            <li><a href="category.php">Philosophy and Life</a></li>
+                                            <li><a href="category.php">Human History</a></li>
                                         </ul>
                                     </li>
                                     <?php
-                                    if (isset($_SESSION['student']['id'])) {
+                                    if (isset($_SESSION['student']['id']) || isset($_SESSION['admin'])) {
+                                        if (isset($_SESSION['student']['id'])) {
+                                            ?>
+                                            <li>
+                                                <a style="cursor: pointer;" title="Your books" href="cart.php">
+                                                    <i class="fas fa-book" style="font-size: 20px;">
+                                                        <span class="badge badge-danger"><?php if (isset($cartDetail)) echo $cartDetail->num_rows;?></span>
+                                                    </i>
+                                                </a>
+                                            </li>
+                                            <?php
+                                        }
+                                        elseif (isset($_SESSION['admin']) && $_SESSION['admin'] == 'uetLicAdmin') {
+                                            ?>
+                                            <li>
+                                                <a style="cursor: pointer;" id="employee">Employee</a>
+                                            </li>
+                                            <?php
+                                        }
                                         ?>
                                         <li>
-                                            <a style="cursor: pointer;" title="Your books" href="cart.php">
-                                                <i class="fas fa-book" style="font-size: 20px;">
-                                                    <span class="badge badge-danger"><?php if (isset($cartDetail)) echo $cartDetail->num_rows;?></span>
-                                                </i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a id="logout" title="Logout" href="../controller/logout.php">
+                                            <a id="logout" title="Logout">
                                                 <i class="fas fa-power-off" style="font-size: 20px;"></i>
                                             </a>
                                         </li>
@@ -116,7 +127,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                         </div>
                     </div>
                     <?php
-                    if (!isset($_SESSION['student']['id'])) {
+                    if (!isset($_SESSION['student']['id']) && !isset($_SESSION['admin'])) {
                         ?>
                         <div class="col-xl-2 col-lg-2 col-md-3">
                             <div class="header-right-btn f-right d-none d-lg-block">
@@ -177,7 +188,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                 </p>
                                 <!-- Hero-btn -->
                                 <?php
-                                if (!isset($_SESSION['student']['id'])) {
+                                if (!isset($_SESSION['student']['id']) && !isset($_SESSION['admin'])) {
                                     ?>
                                     <div
                                         class="hero__btn"
@@ -271,7 +282,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                             </p>
                         </div>
                         <div class="do-btn">
-                            <a href="searchBookView"><i class="ti-arrow-right"></i>Search</a>
+                            <a href="searchBookView.php"><i class="ti-arrow-right"></i>Search</a>
                         </div>
                     </div>
                 </div>
@@ -368,7 +379,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
         <div class="container">
             <div class="haveAproject" data-background="assets/img/team/have.jpg">
                 <?php
-                if (!isset($_SESSION['student']['id'])) {
+                if (!isset($_SESSION['student']['id']) && !isset($_SESSION['admin'])) {
                     ?>
                     <div class="row d-flex align-items-center">
                         <div class="col-xl-7 col-lg-9 col-md-12">
@@ -449,5 +460,17 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
 <!-- Jquery Plugins, main Jquery -->
 <script src="../assets/js/plugins.js"></script>
 <script src="../assets/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#logout").click(function () {
+            if (confirm('Are you sure you want to log out?')) {
+                window.location.replace('../controller/logout.php');
+            } else window.location.replace(window.location.href);
+        });
+        $("#employee").click(function () {
+            window.location.replace('admin.php');
+        });
+    });
+</script>
 </body>
 </html>

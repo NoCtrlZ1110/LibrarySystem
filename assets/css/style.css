@@ -7004,3 +7004,9 @@ del {
 .switch-wrap {
     margin-bottom: 10px
 }
+#borrowForm{
+	position: absolute;
+	top: 200px;
+	left: 800px;
+	z-index: 0;
+}

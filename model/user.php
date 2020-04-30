@@ -1,13 +1,37 @@
 <?php
-include_once "../model/connect.php";
+include_once "connect.php";
 function existsUser($studentID, $password, mysqli $connect) {
     $userQuery = "SELECT *FROM students WHERE studentID = '$studentID' AND password = '$password'";
     $result = $connect->query($userQuery);
     if ($result->num_rows == 0) {
-        echo "<script>window.alert('This account is not exists, please check your account')</script>";
+        echo "<script>window.alert('This account is not exists, please check your account');
+               window.location.replace(window.location.href);
+               </script>";
         return false;
     }
     return true;
+}
+function confirmAdmin($username, $password, mysqli $connect) {
+    $adminQuery = "SELECT *FROM admin WHERE username = '$username' AND password = '$password'";
+    $result = $connect->query($adminQuery);
+    if ($result->num_rows == 0) {
+//        session_destroy();
+        return false;
+    } else {
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $_SESSION['admin'] = $row['username'];
+        return true;
+    }
+}
+function confirmEmployee($username, $password, mysqli $connect) {
+    $employeeQuery = "SELECT *FROM employee WHERE employeeID = '$username' AND password = '$password'";
+    $result = $connect->query($employeeQuery);
+    if ($result->num_rows == 0) return false;
+    else {
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $_SESSION['admin'] = $row['employeeID'];
+        return true;
+    }
 }
 function getInfo($studentID, $password, mysqli $connect){
     $userQuery = "SELECT *FROM students WHERE studentID = '$studentID' AND password = '$password'";

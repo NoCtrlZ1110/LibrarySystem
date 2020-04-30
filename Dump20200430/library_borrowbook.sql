@@ -16,35 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `returnbook`
+-- Table structure for table `borrowbook`
 --
 
-DROP TABLE IF EXISTS `returnbook`;
+DROP TABLE IF EXISTS `borrowbook`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `returnbook` (
+CREATE TABLE `borrowbook` (
   `roundID` int(11) NOT NULL AUTO_INCREMENT,
   `bookID` int(11) NOT NULL,
   `studentID` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
   `quantity` int(11) NOT NULL,
-  `returnDate` date NOT NULL,
-  `status` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `borrowDate` date NOT NULL,
+  `request` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`roundID`),
-  KEY `fk_studentID2` (`studentID`),
-  KEY `fk_bookID2` (`bookID`),
-  CONSTRAINT `fk_bookID2` FOREIGN KEY (`bookID`) REFERENCES `books` (`bookID`),
-  CONSTRAINT `fk_studentID2` FOREIGN KEY (`studentID`) REFERENCES `students` (`studentID`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `fk_studentID` (`studentID`),
+  KEY `fk_bookID` (`bookID`),
+  CONSTRAINT `fk_bookID` FOREIGN KEY (`bookID`) REFERENCES `books` (`bookID`),
+  CONSTRAINT `fk_studentID` FOREIGN KEY (`studentID`) REFERENCES `students` (`studentID`)
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `returnbook`
+-- Dumping data for table `borrowbook`
 --
 
-LOCK TABLES `returnbook` WRITE;
-/*!40000 ALTER TABLE `returnbook` DISABLE KEYS */;
-INSERT INTO `returnbook` VALUES (36,9,'18020881',1,'2020-05-28','NO'),(37,10,'18020881',1,'2020-09-01','NO'),(38,12,'18020881',1,'2020-08-28','NO');
-/*!40000 ALTER TABLE `returnbook` ENABLE KEYS */;
+LOCK TABLES `borrowbook` WRITE;
+/*!40000 ALTER TABLE `borrowbook` DISABLE KEYS */;
+INSERT INTO `borrowbook` VALUES (52,9,'18020881',1,'2020-05-07',NULL),(53,11,'18020881',1,'2020-04-30',NULL);
+/*!40000 ALTER TABLE `borrowbook` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-28  8:25:54
+-- Dump completed on 2020-04-30 12:56:44

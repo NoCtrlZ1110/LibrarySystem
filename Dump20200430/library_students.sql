@@ -16,27 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `employee2`
+-- Table structure for table `students`
 --
 
-DROP TABLE IF EXISTS `employee2`;
+DROP TABLE IF EXISTS `students`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `employee2` (
-  `id` int(11) NOT NULL COMMENT 'primary key',
-  `employee_name` varchar(255) NOT NULL COMMENT 'employee name',
-  `employee_salary` double NOT NULL COMMENT 'employee salary'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE `students` (
+  `studentID` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
+  `studentName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dateOfBirth` date NOT NULL,
+  `faculty` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `class` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`studentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `employee2`
+-- Dumping data for table `students`
 --
 
-LOCK TABLES `employee2` WRITE;
-/*!40000 ALTER TABLE `employee2` DISABLE KEYS */;
-INSERT INTO `employee2` VALUES (2,'Smith',170750),(3,'Jhon',86000),(6,'Andy',372000),(7,'Flower',137500),(8,'Steve',327900),(9,'William',205500),(10,'Dany',103600),(11,'Dove',120000),(12,'Kim',14000),(13,'Frost',20000);
-/*!40000 ALTER TABLE `employee2` ENABLE KEYS */;
+LOCK TABLES `students` WRITE;
+/*!40000 ALTER TABLE `students` DISABLE KEYS */;
+INSERT INTO `students` VALUES ('17020881','Tran Van An','1999-11-11','CN1','K62','12345678'),('18020881','Nguyen Van Manh','2000-07-11','CN1','K63','18020881'),('18020885','Dang Van Manh','2000-08-11','CN1','K63','18020885');
+/*!40000 ALTER TABLE `students` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-28  8:25:55
+-- Dump completed on 2020-04-30 12:56:44

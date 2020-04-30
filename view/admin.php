@@ -1,26 +1,33 @@
 <?php
 include_once "../model/connect.php";
-include_once "../model/user.php";
+//include_once "../Objects/Search.php";
+//include_once "../Objects/searchUser.php";
+//include_once "../model/user.php";
+//include_once "../model/validate.php";
+include_once "../model/modelAdmin.php";
 $connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
-if (isset($_POST["login"])) {
-    if (confirmAdmin($_POST["username"], $_POST["password"], $connect))  header("Location: searchBookView.php");
-    if (confirmEmployee($_POST["username"], $_POST["password"], $connect))  header("Location: searchBookView.php");
-    if (existsUser($_POST["username"], $_POST["password"], $connect)) {
-        getInfo($_POST["username"], $_POST["password"], $connect);
-//        $_SESSION['timeout'] = time();
-        header("Location: searchBookView.php");
-    }
-    else {
-//        session_destroy();
-        exit;
-    }
+if (!isset($_SESSION['admin'])) header("Location: login.php");
+if (isset($_SESSION['admin']) && $_SESSION['admin'] != 'uetLicAdmin') header("Location: login.php");
+$result = getEmployeeInfo($connect);
+if (gettype($result) == 'boolean') {
+    echo
+    "<script>
+        window.alert('Nothing');
+        window.location.replace(window.location.href);
+    </script>";
+}
+if ($result->num_rows == 0) {
+    echo
+    "<script>
+        window.alert('Nothing');
+        window.location.replace(window.location.href);
+    </script>";
 }
 ?>
 <!DOCTYPE html>
-<html lang="en
-">
+<html class="no-js" lang="zxx">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -28,7 +35,7 @@ if (isset($_POST["login"])) {
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!--    <link rel="manifest" href="site.webmanifest" />-->
+    <!--    <link rel="manifest" href="site.webmanifest" />-->
     <link
         rel="shortcut icon"
         type="image/x-icon"
@@ -48,8 +55,7 @@ if (isset($_POST["login"])) {
     <link rel="stylesheet" href="../assets/css/nice-select.css" />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/responsive.css" />
-    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/css/searchUser.css">
 </head>
 
 <body>
@@ -89,13 +95,7 @@ if (isset($_POST["login"])) {
                                         <a href="searchBookView.php">Search</a>
                                         <ul class="submenu">
                                             <li><a href="searchBookView.php">Search Book</a></li>
-                                            <?php
-                                            if (isset($_SESSION['admin'])) {
-                                                ?>
-                                                <li><a href="searchUser.html">Search User</a></li>
-                                                <?php
-                                            }
-                                            ?>
+                                            <li><a href="searchUser.php">Search User</a></li>
                                         </ul>
                                     </li>
                                     <li>
@@ -109,15 +109,34 @@ if (isset($_POST["login"])) {
                                             <li><a href="category.php">Human History</a></li>
                                         </ul>
                                     </li>
+                                    <?php
+                                    if (isset($_SESSION['admin'])) {
+                                        ?>
+                                        <li>
+                                            <a style="cursor: pointer;" id="employee">Employee</a>
+                                        </li>
+                                        <li>
+                                            <a id="logout" title="Logout">
+                                                <i class="fas fa-power-off" style="font-size: 20px;"></i>
+                                            </a>
+                                        </li>
+                                        <?php
+                                    }
+                                    ?>
                                 </ul>
                             </nav>
                         </div>
                     </div>
-
                     <div class="col-xl-2 col-lg-2 col-md-3">
-                        <div class="header-right-btn f-right d-none d-lg-block">
-                            <a href="login.php" class="btn header-btn">Login</a>
-                        </div>
+                        <?php
+                        if (!isset($_SESSION['admin'])) {
+                            ?>
+                            <div class="header-right-btn f-right d-none d-lg-block">
+                                <a href="login.php" class="btn header-btn">Login</a>
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                     <!-- Mobile Menu -->
                     <div class="col-12">
@@ -142,46 +161,39 @@ if (isset($_POST["login"])) {
                                 data-animation="fadeInLeft"
                                 data-delay="1s"
                             >
-                                <img src="../assets/img/hero/hero_left.png" alt="" />
+                                <img src="../assets/img/hero/writer.png" alt="" />
                             </div>
                         </div>
                         <div class="col-lg-7 col-md-9">
                             <div class="hero__caption hero__caption2">
                                 <h1 data-animation="fadeInRight" data-delay=".4s">
-                                    Login<br />
+                                    Employee<br />
+                                    Management
                                 </h1>
-                                <form action="login.php" method="post">
-                                    <input
-                                        class="form-control form-control-lg mb-30"
-                                        type="username"
-                                        name="username"
-                                        placeholder="Username"
-                                        aria-label="Username"
-                                    />
-                                    <input
-                                        class="form-control form-control-lg mb-50"
-                                        type="password"
-                                        name="password"
-                                        placeholder="Password"
-                                        aria-label="Password"
-                                    />
-
-                                    <!-- Hero-btn -->
-                                    <div
-                                        class="hero__btn"
-                                        data-animation="fadeInRight"
-                                        data-delay=".8s"
-                                    >
-                                        <button class="btn hero-btn" type="submit" name="login">
-                                            Login<i class="fas fa-sign-in-alt fa-lg ml-2"></i>
-                                        </button>
-                                        <span class="mx-5">or</span>
-                                        <a class="btn hero-btn" href="signUp.php">
-                                            SignUp
-                                            <i class="fas fa-plus-circle fa-lg ml-2"></i>
-                                        </a>
-                                    </div>
-                                </form>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Password</th>
+                                        <th>Name</th>
+                                        <th>Shift</th>
+                                    </tr>
+                                    </thead>
+                                    <?php
+                                    if (isset($result) && ($result->num_rows) > 0) {
+                                        while ($row = mysqli_fetch_array($result)) {
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $row['employeeID'];?></td>
+                                                <td><?php echo $row['password'];?></td>
+                                                <td><?php echo $row['name'];?></td>
+                                                <td><?php echo $row['shift'];?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    }
+                                    ?>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -191,7 +203,6 @@ if (isset($_POST["login"])) {
     </div>
     <!-- Slider Area End-->
 </main>
-
 <!-- JS here -->
 
 <!-- All JS Custom Plugins Link Here here -->
@@ -229,5 +240,17 @@ if (isset($_POST["login"])) {
 <!-- Jquery Plugins, main Jquery -->
 <script src="../assets/js/plugins.js"></script>
 <script src="../assets/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#logout").click(function () {
+            if (confirm('Are you sure you want to log out?')) {
+                window.location.replace('../controller/logout.php');
+            } else window.location.replace(window.location.href);
+        });
+        $("#employee").click(function () {
+            window.location.replace(window.location.href);
+        });
+    });
+</script>
 </body>
 </html>

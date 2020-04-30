@@ -37,6 +37,12 @@ function signupValidate($studentID, $studentname, $birthday, $password, $confirm
         echo "<script>window.alert('Password must be greater than 4 characters')</script>";
         return false;
     }
+    if (str_replace("'", "", $password) != $password) {
+        echo "<script>window.alert('Password not allowed contain single quote and space')</script>";
+    }
+    if (str_replace(" ", "", $password) != $password) {
+        echo "<script>window.alert('Password not allowed contain single quote and space')</script>";
+    }
     if ($confirm != $password) {
 //        $_SESSION["error"]["confirm"] = "Confirm password incorrect";
         echo "<script>window.alert('Confirm password incorrect')</script>";

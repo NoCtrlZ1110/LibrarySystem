@@ -1,26 +1,15 @@
 <?php
-include_once "../model/connect.php";
+include "../model/connect.php";
+include_once "../controller/controlCategory.php";
 include_once "../model/user.php";
 $connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
-if (isset($_POST["login"])) {
-    if (confirmAdmin($_POST["username"], $_POST["password"], $connect))  header("Location: searchBookView.php");
-    if (confirmEmployee($_POST["username"], $_POST["password"], $connect))  header("Location: searchBookView.php");
-    if (existsUser($_POST["username"], $_POST["password"], $connect)) {
-        getInfo($_POST["username"], $_POST["password"], $connect);
-//        $_SESSION['timeout'] = time();
-        header("Location: searchBookView.php");
-    }
-    else {
-//        session_destroy();
-        exit;
-    }
-}
+$category1 = getCategory($connect, 'information technology');
+if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['student']['id'], $connect);
 ?>
 <!DOCTYPE html>
-<html lang="en
-">
+<html class="no-js" lang="zxx">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -48,8 +37,9 @@ if (isset($_POST["login"])) {
     <link rel="stylesheet" href="../assets/css/nice-select.css" />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/responsive.css" />
-    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/css/category.css">
+    <script type="text/javascript" src="../public/jquery.min.js"></script>
+    <script type="text/javascript" src="../public/jquery-1.12.4.js"></script>
 </head>
 
 <body>
@@ -65,6 +55,7 @@ if (isset($_POST["login"])) {
     </div>
 </div>
 <!-- Preloader Start -->
+
 <header>
     <!-- Header Start -->
     <div class="header-area header-transparrent">
@@ -93,7 +84,7 @@ if (isset($_POST["login"])) {
                                             if (isset($_SESSION['admin'])) {
                                                 ?>
                                                 <li><a href="searchUser.html">Search User</a></li>
-                                                <?php
+                                            <?php
                                             }
                                             ?>
                                         </ul>
@@ -109,14 +100,49 @@ if (isset($_POST["login"])) {
                                             <li><a href="category.php">Human History</a></li>
                                         </ul>
                                     </li>
+                                    <?php
+                                    if (isset($_SESSION['student']['id']) || isset($_SESSION['admin'])) {
+                                        if (isset($_SESSION['student']['id'])) {
+                                            ?>
+                                            <li>
+                                                <a style="cursor: pointer;" title="Your books" href="cart.php">
+                                                    <i class="fas fa-book" style="font-size: 20px;">
+                                                        <span class="badge badge-danger"><?php echo $cartDetail->num_rows;?></span>
+                                                    </i>
+                                                </a>
+                                            </li>
+                                            <?php
+                                        } elseif (isset($_SESSION['admin']) && $_SESSION['admin'] == 'uetLicAdmin') {
+                                            ?>
+                                            <li>
+                                                <a style="cursor: pointer;" id="employee">Employee</a>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
+                                        <li>
+                                            <a id="logout" title="Logout">
+                                                <i class="fas fa-power-off" style="font-size: 20px;"></i>
+                                            </a>
+                                        </li>
+                                        <?php
+                                    }
+                                    ?>
                                 </ul>
                             </nav>
                         </div>
                     </div>
-
                     <div class="col-xl-2 col-lg-2 col-md-3">
                         <div class="header-right-btn f-right d-none d-lg-block">
-                            <a href="login.php" class="btn header-btn">Login</a>
+                            <?php
+                            if (!isset($_SESSION['student']['id']) && !isset($_SESSION['admin'])) {
+                                ?>
+                                <div class="header-right-btn f-right d-none d-lg-block">
+                                    <a href="login.php" class="btn header-btn">Login</a>
+                                </div>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     <!-- Mobile Menu -->
@@ -129,69 +155,57 @@ if (isset($_POST["login"])) {
     </div>
     <!-- Header End -->
 </header>
+
 <main>
     <!-- Slider Area Start-->
-    <div class="slider-area">
-        <div class="slider-active">
-            <div class="single-slider slider-height d-flex align-items-center">
-                <div class="container">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-lg-5 d-none d-xl-block">
-                            <div
-                                class="hero__img hero__img2"
-                                data-animation="fadeInLeft"
-                                data-delay="1s"
-                            >
-                                <img src="../assets/img/hero/hero_left.png" alt="" />
-                            </div>
-                        </div>
-                        <div class="col-lg-7 col-md-9">
-                            <div class="hero__caption hero__caption2">
-                                <h1 data-animation="fadeInRight" data-delay=".4s">
-                                    Login<br />
-                                </h1>
-                                <form action="login.php" method="post">
-                                    <input
-                                        class="form-control form-control-lg mb-30"
-                                        type="username"
-                                        name="username"
-                                        placeholder="Username"
-                                        aria-label="Username"
-                                    />
-                                    <input
-                                        class="form-control form-control-lg mb-50"
-                                        type="password"
-                                        name="password"
-                                        placeholder="Password"
-                                        aria-label="Password"
-                                    />
-
-                                    <!-- Hero-btn -->
-                                    <div
-                                        class="hero__btn"
-                                        data-animation="fadeInRight"
-                                        data-delay=".8s"
-                                    >
-                                        <button class="btn hero-btn" type="submit" name="login">
-                                            Login<i class="fas fa-sign-in-alt fa-lg ml-2"></i>
-                                        </button>
-                                        <span class="mx-5">or</span>
-                                        <a class="btn hero-btn" href="signUp.php">
-                                            SignUp
-                                            <i class="fas fa-plus-circle fa-lg ml-2"></i>
-                                        </a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+    <div class="services-area">
+        <div class="container">
+            <!-- Section-tittle -->
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-8">
+                    <div class="section-tittle text-center mb-80">
+                        <span>Book Categories</span>
+                        <h2>Here are all book Categories​</h2>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="container" id="category" style="display: none;">
+        <div class="row">
+            <div class="col col-sm-4" style="text-align: center;">
+                <span>Information Technology</span>
+                <ul class="list-group">
+                    <?php
+                    if ($category1->num_rows > 0) {
+                        while ($row1 = mysqli_fetch_array($category1)) {
+                            ?>
+                            <a href="searchBookView.php?name=<?php echo $row1['name'];?>" style="color: #34ce57;">
+                                <li class="list-group-item">
+                                    <?php
+                                    echo $row1['name'];
+                                    ?>
+                                </li>
+                            </a>
+                            <?php
+                        }
+                    }
+                    ?>
+                </ul>
+            </div>
+            <div class="col col-sm-4" style="background-color: #9fcdff;">
+                ABC
+            </div>
+            <div class="col col-sm-4" style="background-color: red;">
+                ABC
+            </div>
+        </div>
+    </div>
     <!-- Slider Area End-->
 </main>
-
+<script>
+    $("#category").fadeIn(1800);
+</script>
 <!-- JS here -->
 
 <!-- All JS Custom Plugins Link Here here -->
@@ -229,5 +243,17 @@ if (isset($_POST["login"])) {
 <!-- Jquery Plugins, main Jquery -->
 <script src="../assets/js/plugins.js"></script>
 <script src="../assets/js/main.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#logout").click(function () {
+            if (confirm('Are you sure you want to log out?')) {
+                window.location.replace('../controller/logout.php');
+            } else window.location.replace(window.location.href);
+        });
+        $("#employee").click(function () {
+            window.location.replace('admin.php');
+        });
+    });
+</script>
 </body>
 </html>

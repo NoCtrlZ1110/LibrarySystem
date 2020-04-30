@@ -4,11 +4,12 @@ include_once "../Objects/Search.php";
 include_once "../Objects/searchBook.php";
 include_once "../Objects/Book.php";
 include_once "../model/timeout.php";
+include_once "../model/user.php";
 $connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 $book = new Book($connect, 0);
-if (!isset($_SESSION['timeout']) || setTimeOut($_SESSION['timeout'])) header("Location: login.php");
+if (!isset($_SESSION['student']['id'])) header("Location: login.php");
 if (isset($_GET['bookID']) && !empty($_GET['bookID'])) {
     $bookID = $_GET['bookID'];
     $capacity = intval($_GET['cap']);
@@ -48,6 +49,7 @@ if (isset($_POST['confirm'])) {
         }
     }
 }
+if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['student']['id'], $connect);
 ?>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
@@ -86,7 +88,6 @@ if (isset($_POST['confirm'])) {
 </head>
 
 <body>
-<div id="notifier" style="display: none;">ABC</div>
 <!-- Preloader Start -->
 <div id="preloader-active">
     <div class="preloader d-flex align-items-center justify-content-center">
@@ -120,41 +121,45 @@ if (isset($_POST['confirm'])) {
                                 <ul id="navigation">
                                     <li><a href="index.php">Home</a></li>
                                     <li>
-                                        <a href="search.html">Search</a>
+                                        <a href="searchBookView.php">Search</a>
                                         <ul class="submenu">
                                             <li><a href="searchBookView.php">Search Book</a></li>
                                             <?php
                                             if (isset($_SESSION['admin'])) {
                                                 ?>
-                                                <li><a href="searchUser.html">Search User</a></li>
+                                                <li><a href="searchUser.php">Search User</a></li>
                                                 <?php
                                             }
                                             ?>
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="category.html">Category</a>
+                                        <a href="category.php">Category</a>
                                         <ul class="submenu">
-                                            <li><a href="blog.html">Information Technology</a></li>
-                                            <li><a href="single-blog.html">Law and Social</a></li>
-                                            <li><a href="blog.html">Science and Technology</a></li>
-                                            <li><a href="single-blog.html">Education</a></li>
-                                            <li><a href="blog.html">Philosophy and Life</a></li>
-                                            <li><a href="single-blog.html">Human History</a></li>
+                                            <li><a href="category.php">Information Technology</a></li>
+                                            <li><a href="category.php">Law and Social</a></li>
+                                            <li><a href="category.php">Science and Technology</a></li>
+                                            <li><a href="category.php">Education</a></li>
+                                            <li><a href="category.php">Philosophy and Life</a></li>
+                                            <li><a href="category.php">Human History</a></li>
                                         </ul>
                                     </li>
                                     <?php
                                     if (isset($_SESSION['student']['id'])) {
                                         ?>
                                         <li>
-                                            <a style="cursor: pointer;" title="Your books">
+                                            <a style="cursor: pointer;" title="Your books" href="cart.php">
                                                 <i class="fas fa-book" style="font-size: 20px;">
-                                                    <span class="badge badge-danger">4</span>
+                                                    <span class="badge badge-danger">
+                                                        <?php
+                                                        if (isset($cartDetail)) echo $cartDetail->num_rows;
+                                                        ?>
+                                                    </span>
                                                 </i>
                                             </a>
                                         </li>
                                         <li>
-                                            <a id="logout" title="Logout" href="../controller/logout.php">
+                                            <a id="logout" title="Logout">
                                                 <i class="fas fa-power-off" style="font-size: 20px;"></i>
                                             </a>
                                         </li>
@@ -167,7 +172,7 @@ if (isset($_POST['confirm'])) {
                     </div>
                     <div class="col-xl-2 col-lg-2 col-md-3">
                         <?php
-                        if (!isset($_SESSION['student']['id']) == true) {
+                        if (!isset($_SESSION['student']['id'])) {
                             ?>
                             <div class="header-right-btn f-right d-none d-lg-block">
                                 <a href="login.php" class="btn header-btn">Login</a>
@@ -283,10 +288,12 @@ if (isset($_POST['confirm'])) {
 <script src="../assets/js/plugins.js"></script>
 <script src="../assets/js/main.js"></script>
 <script>
-    $("#logout").click(function () {
-        if (confirm('Are you sure you want to log out?')) {
-            window.location.replace('index.php');
-        }
+    $(document).ready(function () {
+        $("#logout").click(function () {
+            if (confirm('Are you sure you want to log out?')) {
+                window.location.replace('../controller/logout.php');
+            } else window.location.replace(window.location.href);
+        });
     });
 </script>
 </body>
