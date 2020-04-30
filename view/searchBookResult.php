@@ -50,11 +50,11 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!--    <link rel="manifest" href="site.webmanifest" />-->
+<!--    <link rel="manifest" href="site.webmanifest" />-->
     <link
-            rel="shortcut icon"
-            type="image/x-icon"
-            href="../assets/img/favicon.ico"
+        rel="shortcut icon"
+        type="image/x-icon"
+        href="../assets/img/favicon.ico"
     />
 
     <!-- CSS here -->
@@ -114,7 +114,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                             if (isset($_SESSION['admin'])) {
                                                 ?>
                                                 <li><a href="searchUser.php">Search User</a></li>
-                                                <?php
+                                            <?php
                                             }
                                             ?>
                                         </ul>
@@ -155,7 +155,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                                 <i class="fas fa-power-off" style="font-size: 20px;"></i>
                                             </a>
                                         </li>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </ul>
@@ -169,7 +169,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                             <div class="header-right-btn f-right d-none d-lg-block">
                                 <a href="login.php" class="btn header-btn">Login</a>
                             </div>
-                            <?php
+                        <?php
                         }
                         ?>
                     </div>
@@ -183,61 +183,197 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
     </div>
     <!-- Header End -->
 </header>
-<main>
-    <!-- Slider Area Start-->
-    <div class="slider-area">
-        <div class="slider-active">
-            <div class="single-slider slider-height d-flex align-items-center">
-                <div class="container">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-lg-5 d-none d-xl-block">
-                            <div
-                                    class="hero__img hero__img2"
-                                    data-animation="fadeInLeft"
-                                    data-delay="1s"
-                            >
-                                <img src="../assets/img/hero/book.png" alt="" />
-                            </div>
-                        </div>
-                        <div class="col-lg-7 col-md-9">
-                            <div class="hero__caption hero__caption2">
-                                <h1 data-animation="fadeInRight" data-delay=".4s">
-                                    Search<br />
-                                    Every Book
-                                </h1>
-                                <form action="searchBookResult.php" method="post">
-                                    <input
-                                            class="form-control form-control-lg mb-2"
-                                            type="search"
-                                            name="name"
-                                            placeholder="Search"
-                                            aria-label="Search"
-                                    />
-                                    <p data-animation="fadeInRight" data-delay=".6s">
-                                        Search any book in a second!
-                                    </p>
-                                    <!-- Hero-btn -->
-                                    <div
-                                            class="hero__btn"
-                                            data-animation="fadeInRight"
-                                            data-delay=".8s"
-                                    >
-                                        <button type="submit" class="btn hero-btn" name="search"
-                                        ><span style="size: 10;">SEARCH</span
-                                            ><i class="fas fa-lg fa-search ml-2"></i
-                                            ></button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="container " id="listBook">
+    <?php
+    if (isset($limitResult) && mysqli_num_rows($limitResult) > 0 && isset($_SESSION['total']) && !isset($_GET['name'])) {
+        ?>
+        <div class="alert alert-success alert-dismissible fade show" style="width: 28%; height: 50px;">
+            <button type="button" class="close" data-dismiss="alert" style="outline: none;">&times;</button>
+            <i class="fas fa-check-circle" style="color: #34ce57;"></i>
+            <strong>Success! <?php echo $_SESSION['total'] . " result found.";?></strong>
         </div>
-    </div>
-    <!-- Slider Area End-->
-</main>
-
+        <?php
+        while ($row = mysqli_fetch_array($limitResult)) {
+            ?>
+            <div class="row book">
+                <div class="col col-sm-2">
+                    <?php
+                    if (!isset($_SESSION['admin'])) {
+                        if (intval($row['quantity'] > 0)) {
+                            ?>
+                            <a href="borrowView.php?bookID=<?php echo $row['bookID'];?>&cap=<?php echo $row['quantity']; ?>">
+                                <img src="<?php echo '../image/' . $row['image'] . '.jpg'?>" class="image" width="150px" height="200px">
+                            </a>
+                            <?php
+                        } else {
+                            ?>
+                            <img src="<?php echo '../image/' . $row['image'] . '.jpg'?>" class="image over" width="150px" height="200px" style="cursor: not-allowed" >
+                            <?php
+                        }
+                        ?>
+                        <?php
+                    } else {
+                        ?>
+                        <a href="update.php?bookID=<?php echo $row['bookID'];?>">
+                            <img src="<?php echo '../image/' . $row['image'] . '.jpg'?>" class="image" width="150px" height="200px">
+                        </a>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <div class="col-sm-7">
+                    <?php
+                    if (!isset($_SESSION['admin'])) {
+                        if (intval($row['quantity']) > 0) {
+                            ?>
+                            <a href="borrowView.php?bookID=<?php echo $row['bookID'];?>&cap=<?php echo $row['quantity']; ?>" class="a-custom">
+                                <?php echo $row["name"] . "<br/>"; ?>
+                                <?php echo $row["caption"]; ?>
+                            </a>
+                            <?php
+                        } else {
+                            ?>
+                            <p style="cursor: not-allowed" class="over">
+                                <?php echo $row["name"] . "<br/>"; ?>
+                                <?php echo $row["caption"]; ?>
+                            </p>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                    } else {
+                        ?>
+                        <a href="update.php?bookID=<?php echo $row['bookID'];?>" class="a-custom">
+                            <?php echo $row["name"] . "<br/>"; ?>
+                            <?php echo $row["caption"]; ?>
+                        </a>
+                        <?php
+                    }
+                    ?>
+                    <br/> <br/>
+                    <p style="font-family: Arial; font-size: 17px !important;"> <?php echo "Author: " . "<strong>" . $row["author"] . "</strong>"?></p>
+                    <p style="font-family: Arial; font-size: 17px !important;"> <?php echo "Publish Date: " . "<strong>" . date("d/m/Y", strtotime($row["publishDate"])) . "</strong>"?></p>
+                </div>
+                <div class="col col-sm-3">
+                    <i class="fas fa-book" style="color: green; font-size: 20px; margin-left: 70px; margin-top: 30px;">
+                        <?php
+                        echo $row['quantity'];
+                        ?>
+                    </i> <br/>
+                    <?php
+                    if (!isset($_SESSION['admin'])) {
+                        if (intval($row['quantity'] > 0)) {
+                            ?>
+                            <button class="btn borrow" type="submit" name="borrow" onclick="window.location.href = 'borrowView.php?bookID=<?php echo $row['bookID'] . '&cap='.$row['quantity'];?>';" formmethod="post">Borrow Book</button>
+                            <?php
+                        } else {
+                            ?>
+                            <button class="btn borrow over" type="submit" disabled="disabled" style="cursor: not-allowed;">Not Allowed</button>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                    } elseif (isset($_SESSION['admin'])) {
+                        ?>
+                        <button class="btn borrow" type="submit" name="update" onclick="window.location.href = 'update.php?bookID=<?php echo $row['bookID'];?>';" formmethod="post">Up Date</button>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <?php
+                ?>
+            </div>
+            <?php
+        }
+    }
+     if ((!isset($limitResult) && isset($_POST["search"])) || (isset($limitResult) && mysqli_num_rows($limitResult) == 0)) {
+        ?>
+        <div class="alert alert-danger alert-dismissible fade show" style="width: 15%; height: 50px;">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <i class="fas fa-exclamation-triangle" style="color: red;">No result</i>
+        </div>
+        <?php
+    }
+     if (isset($_GET['name']) && !empty($_GET['name']) && isset($someResult)) {
+         if ($someResult->num_rows > 0) {
+             while ($some = mysqli_fetch_array($someResult)) {
+                 ?>
+                 <div class="row book">
+                     <div class="col col-sm-2">
+                         <a href="borrowView.php?bookID=<?php echo $some['bookID'];?>&cap=<?php echo $some['quantity']; ?>">
+                             <img src="<?php echo '../image/' . $some['image'] . '.jpg'?>" class="image" width="150px" height="200px">
+                         </a>
+                     </div>
+                     <div class="col-sm-7">
+                         <a href="borrowView.php?bookID=<?php echo $some['bookID'];?>&cap=<?php echo $some['quantity']; ?>" class="a-custom">
+                             <?php echo $some["name"] . "<br/>"; ?>
+                             <?php echo $some["caption"]; ?>
+                         </a> <br/> <br/>
+                         <p style="font-family: Arial; font-size: 17px !important;"> <?php echo "Author: " . "<strong>" . $some["author"] . "</strong>"?></p>
+                         <p style="font-family: Arial; font-size: 17px !important;"> <?php echo "Publish Date: " . "<strong>" . date("d/m/Y", strtotime($some["publishDate"])) . "</strong>"?></p>
+                     </div>
+                     <div class="col col-sm-3">
+                         <i class="fas fa-book" style="color: green; font-size: 20px; margin-left: 70px; margin-top: 30px;">
+                             <?php
+                             echo $some['quantity'];
+                             ?>
+                         </i> <br/>
+                         <?php
+                         if (isset($_SESSION['student']['id'])) {
+                             ?>
+                             <button class="btn borrow" type="submit" name="borrow" onclick="window.location.href = 'borrowView.php?bookID=<?php echo $some['bookID'] . '&cap='.$some['quantity'];?>';" formmethod="post">Borrow Book</button>
+                             <?php
+                         } elseif (isset($_SESSION['admin'])) {
+                             ?>
+                             <button class="btn borrow" type="submit" name="update" onclick="window.location.href = 'update.php?bookID=<?php echo $some['bookID'];?>';" formmethod="post">Up Date</button>
+                             <?php
+                         }
+                         ?>
+                     </div>
+                     <?php
+                     ?>
+                 </div>
+    <?php
+             }
+         }
+     }
+    ?>
+</div>
+<?php
+if (isset($limitResult) && mysqli_num_rows($limitResult) > 0) {
+    ?>
+    <nav aria-label="Page navigation" id="pagination">
+        <ul class="pagination">
+            <?php if(isset($currentPage) && isset($firstPage) && $currentPage != $firstPage) { ?>
+                <li class="page-item">
+                    <a class="page-link" href="?key=<?php echo $_SESSION['condition'];?>&page=<?php echo $firstPage ?>" tabindex="-1" aria-label="Previous">
+                        <span aria-hidden="true">First</span>
+                    </a>
+                </li>
+            <?php } ?>
+            <?php if(isset($currentPage) && $currentPage >= 2) { ?>
+                <li class="page-item"><a class="page-link" href="?key=<?php echo $_SESSION['condition'];?>&page=<?php echo $previousPage ?>"><?php echo $previousPage ?></a></li>
+            <?php } ?>
+            <li class="page-item active"><a class="page-link" href="?key=<?php echo $_SESSION['condition'];?>&page=<?php if (isset($currentPage))echo $currentPage ?>"><?php if (isset($currentPage)) echo $currentPage ?></a></li>
+            <?php if(isset($currentPage) && $currentPage != $lastPage) { ?>
+                <li class="page-item"><a class="page-link" href="?key=<?php echo $_SESSION['condition'];?>&page=<?php if (isset($nextPage)) echo$nextPage ?>"><?php if (isset($nextPage)) echo $nextPage ?></a></li>
+                <li class="page-item">
+                    <a class="page-link" href="?key=<?php echo $_SESSION['condition'];?>&page=<?php echo $lastPage ?>" aria-label="Next">
+                        <span aria-hidden="true">Last</span>
+                    </a>
+                </li>
+            <?php } ?>
+        </ul>
+    </nav>
+    <?php
+}
+?>
 
 <!-- JS here -->
 

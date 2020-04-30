@@ -1,7 +1,7 @@
 <?php
 include_once "../model/connect.php";
 include_once "../model/user.php";
-$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
+$connect = connectServer("localhost", "root", "", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['student']['id'], $connect);
@@ -42,7 +42,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
         <div class="preloader-inner position-relative">
             <div class="preloader-circle"></div>
             <div class="preloader-img pere-text">
-                <img src="..assets/img/UET.png" alt="" />
+                <img src="../assets/img/UET.png" alt="" />
             </div>
         </div>
     </div>
@@ -59,7 +59,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                     <div class="col-xl-2 col-lg-2 col-md-1">
                         <div class="logo">
                             <a href="index.php"
-                            ><img src="..assets/img/logo/logo.png" alt=""
+                            ><img src="../assets/img/logo/logo.png" alt=""
                                 /></a>
                         </div>
                     </div>
@@ -84,14 +84,14 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                     </li>
                                     <li>
                                         <a href="category.php">Category</a>
-                                        <ul class="submenu">
-                                            <li><a href="category.php">Information Technology</a></li>
-                                            <li><a href="category.php">Law and Social</a></li>
-                                            <li><a href="category.php">Science and Technology</a></li>
-                                            <li><a href="category.php">Education</a></li>
-                                            <li><a href="category.php">Philosophy and Life</a></li>
-                                            <li><a href="category.php">Human History</a></li>
-                                        </ul>
+<!--                                        <ul class="submenu">-->
+<!--                                            <li><a href="category.php">Information Technology</a></li>-->
+<!--                                            <li><a href="category.php">Law and Social</a></li>-->
+<!--                                            <li><a href="category.php">Science and Technology</a></li>-->
+<!--                                            <li><a href="category.php">Education</a></li>-->
+<!--                                            <li><a href="category.php">Philosophy and Life</a></li>-->
+<!--                                            <li><a href="category.php">Human History</a></li>-->
+<!--                                        </ul>-->
                                     </li>
                                     <?php
                                     if (isset($_SESSION['student']['id']) || isset($_SESSION['admin'])) {

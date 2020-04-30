@@ -2,7 +2,7 @@
 include "../model/connect.php";
 include_once "../controller/controlCategory.php";
 include_once "../model/user.php";
-$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
+$connect = connectServer("localhost", "root", "", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 $category1 = getCategory($connect, 'information technology');

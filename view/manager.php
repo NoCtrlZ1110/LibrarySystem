@@ -1,7 +1,7 @@
 <?php
 include_once "../model/connect.php";
 include_once "../model/employee.php";
-$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
+$connect = connectServer("localhost", "root", "", 3306);
 $dbname ="library";
 $connect->select_db($dbname);
 if (!isset($_SESSION['admin'])) header("Location: ../controller/logout.php");
