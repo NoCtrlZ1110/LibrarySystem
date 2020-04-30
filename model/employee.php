@@ -9,7 +9,7 @@ function bookManager(mysqli $connect, $studentID) {
                      FROM borrowbook
                             INNER JOIN returnbook r ON borrowbook.bookID = r.bookID
                             INNER JOIN books b ON borrowbook.bookID = b.bookID
-                     WHERE borrowbook.studentID = '$studentID'";
+                     WHERE borrowbook.studentID = '$studentID' AND borrowbook.studentID = r.studentID";
     $result = mysqli_query($connect, $managerQuery);
     return $result;
 }
