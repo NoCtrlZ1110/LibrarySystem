@@ -71,4 +71,13 @@ class Book {
         if (empty($name) && empty($author) && empty($date) && empty($quantity)) return true;
         return false;
     }
+    public  function AddBook($name, $cap, $quantity, $publish, $author, $category, $image) {
+        if (empty($name) || empty($quantity) || empty($category) || empty($publish) || empty($author) || empty($image))
+            return false;
+        if (intval($quantity) <= 0) return false;
+        $addQuery = "INSERT INTO books (books.name, caption, quantity, publishDate, author, category, image)
+                       VALUES('$name', '$cap', '$quantity', '$publish', '$author', '$category', '$image')";
+        if ($this->connect->query($addQuery) == true) return true;
+        return false;
+    }
 }

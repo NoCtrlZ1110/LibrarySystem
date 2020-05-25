@@ -5,7 +5,7 @@ include_once "../Objects/searchBook.php";
 include_once "../Objects/Book.php";
 include_once "../model/timeout.php";
 include_once "../model/user.php";
-$connect = connectServer("localhost", "root", "", 3306);
+$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 if (!isset($_SESSION['student']['id'])) header("Location: login.php");
@@ -128,6 +128,11 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                                 <i class="fas fa-book">
                                                     <span class="badge badge-danger" style="margin-bottom: 20px;"><?php if (isset($cartDetail)) echo mysqli_num_rows($cartDetail);?></span>
                                                 </i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="profile.php">
+                                                Profile
                                             </a>
                                         </li>
                                         <li>

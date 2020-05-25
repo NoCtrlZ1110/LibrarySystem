@@ -2,7 +2,7 @@
 include_once "../model/connect.php";
 include_once "../Objects/Book.php";
 include "../model/validate.php";
-$connect = connectServer("localhost", "root", "", 3306);
+$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect -> select_db($dbname);
 if (!isset($_SESSION['admin'])) header("Location: login.php");
@@ -209,6 +209,9 @@ if (!isset($_GET['bookID']) || empty($_GET['bookID'])) {
                                             <li><a href="searchBookView.php">Search Book</a></li>
                                             <li><a href="searchUser.html">Search User</a></li>
                                         </ul>
+                                    </li>
+                                    <li>
+                                        <a href="addBook.php">Add</a>
                                     </li>
                                     <li>
                                         <a href="category.php">Category</a>

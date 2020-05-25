@@ -2,10 +2,11 @@
 include "../model/connect.php";
 include_once "../controller/controlCategory.php";
 include_once "../model/user.php";
-$connect = connectServer("localhost", "root", "", 3306);
+$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 $category1 = getCategory($connect, 'information technology');
+$category2 = getCategory($connect, 'Law&Social');
 if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['student']['id'], $connect);
 ?>
 <!DOCTYPE html>
@@ -84,11 +85,14 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                             if (isset($_SESSION['admin'])) {
                                                 ?>
                                                 <li><a href="searchUser.html">Search User</a></li>
-                                            <?php
-                                            }
-                                            ?>
                                         </ul>
                                     </li>
+                                    <li>
+                                        <a href="addBook.php">Add</a>
+                                    </li>
+                                    <?php
+                                    } else echo "</ul>";
+                                    ?>
                                     <li>
                                         <a href="category.php">Category</a>
                                         <ul class="submenu">
@@ -109,6 +113,11 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                                     <i class="fas fa-book" style="font-size: 20px;">
                                                         <span class="badge badge-danger"><?php echo $cartDetail->num_rows;?></span>
                                                     </i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="profile.php">
+                                                    Profile
                                                 </a>
                                             </li>
                                             <?php
@@ -180,7 +189,7 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                     if ($category1->num_rows > 0) {
                         while ($row1 = mysqli_fetch_array($category1)) {
                             ?>
-                            <a href="searchBookView.php?name=<?php echo $row1['name'];?>" style="color: #34ce57;">
+                            <a href="searchBookResult.php?name=<?php echo $row1['name'];?>" style="color: #34ce57;">
                                 <li class="list-group-item">
                                     <?php
                                     echo $row1['name'];
@@ -193,11 +202,25 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                     ?>
                 </ul>
             </div>
-            <div class="col col-sm-4" style="background-color: #9fcdff;">
-                ABC
-            </div>
-            <div class="col col-sm-4" style="background-color: red;">
-                ABC
+            <div class="col col-sm-4" style="text-align: center;">
+                <span>Law and Social</span>
+                <ul class="list-group">
+                    <?php
+                    if ($category2->num_rows > 0) {
+                        while ($row1 = mysqli_fetch_array($category2)) {
+                            ?>
+                            <a href="searchBookResult.php?name=<?php echo $row1['name'];?>" style="color: #34ce57;">
+                                <li class="list-group-item">
+                                    <?php
+                                    echo $row1['name'];
+                                    ?>
+                                </li>
+                            </a>
+                            <?php
+                        }
+                    }
+                    ?>
+                </ul>
             </div>
         </div>
     </div>

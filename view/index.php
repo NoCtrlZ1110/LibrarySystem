@@ -1,7 +1,7 @@
 <?php
 include_once "../model/connect.php";
 include_once "../model/user.php";
-$connect = connectServer("localhost", "root", "", 3306);
+$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['student']['id'], $connect);
@@ -77,21 +77,25 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                             if (isset($_SESSION['admin']) || isset($_SESSION['employee'])) {
                                                 ?>
                                                 <li><a href="searchUser.php">Search User</a></li>
-                                            <?php
-                                            }
-                                            ?>
                                         </ul>
                                     </li>
                                     <li>
+                                        <a href="addBook.php">Add</a>
+                                    </li>
+                                    <?php
+                                    } else echo "</ul>";
+                                    ?>
+
+                                    <li>
                                         <a href="category.php">Category</a>
-<!--                                        <ul class="submenu">-->
-<!--                                            <li><a href="category.php">Information Technology</a></li>-->
-<!--                                            <li><a href="category.php">Law and Social</a></li>-->
-<!--                                            <li><a href="category.php">Science and Technology</a></li>-->
-<!--                                            <li><a href="category.php">Education</a></li>-->
-<!--                                            <li><a href="category.php">Philosophy and Life</a></li>-->
-<!--                                            <li><a href="category.php">Human History</a></li>-->
-<!--                                        </ul>-->
+                                        <ul class="submenu">
+                                            <li><a href="category.php">Information Technology</a></li>
+                                            <li><a href="category.php">Law and Social</a></li>
+                                            <li><a href="category.php">Science and Technology</a></li>
+                                            <li><a href="category.php">Education</a></li>
+                                            <li><a href="category.php">Philosophy and Life</a></li>
+                                            <li><a href="category.php">Human History</a></li>
+                                        </ul>
                                     </li>
                                     <?php
                                     if (isset($_SESSION['student']['id']) || isset($_SESSION['admin'])) {
@@ -102,6 +106,11 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                                     <i class="fas fa-book" style="font-size: 20px;">
                                                         <span class="badge badge-danger"><?php if (isset($cartDetail)) echo $cartDetail->num_rows;?></span>
                                                     </i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="profile.php">
+                                                    Profile
                                                 </a>
                                             </li>
                                             <?php

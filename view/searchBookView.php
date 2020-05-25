@@ -5,7 +5,7 @@ include_once "../Objects/searchBook.php";
 include_once "../model/timeout.php";
 include_once "../model/user.php";
 include_once "../model/validate.php";
-$connect = connectServer("localhost", "root", "", 3306);
+$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 if (isset($_POST["search"])) {
@@ -114,11 +114,15 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                             if (isset($_SESSION['admin'])) {
                                                 ?>
                                                 <li><a href="searchUser.php">Search User</a></li>
-                                                <?php
-                                            }
-                                            ?>
                                         </ul>
                                     </li>
+                                    <li>
+                                        <a href="addBook.php">Add</a>
+                                    </li>
+                                    <?php
+                                    }
+                                            else echo "</ul>";
+                                    ?>
                                     <li>
                                         <a href="category.php">Category</a>
                                         <ul class="submenu">
@@ -139,6 +143,11 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
                                                     <i class="fas fa-book" style="font-size: 20px;">
                                                         <span class="badge badge-danger"><?php echo $cartDetail->num_rows;?></span>
                                                     </i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="profile.php">
+                                                    Profile
                                                 </a>
                                             </li>
                                             <?php

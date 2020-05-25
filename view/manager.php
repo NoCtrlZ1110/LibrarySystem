@@ -1,7 +1,7 @@
 <?php
 include_once "../model/connect.php";
 include_once "../model/employee.php";
-$connect = connectServer("localhost", "root", "", 3306);
+$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname ="library";
 $connect->select_db($dbname);
 if (!isset($_SESSION['admin'])) header("Location: ../controller/logout.php");
@@ -100,11 +100,14 @@ if (isset($_POST['check'])) {
                                             if (isset($_SESSION['admin'])) {
                                                 ?>
                                                 <li><a href="searchUser.php">Search User</a></li>
-                                                <?php
-                                            }
-                                            ?>
                                         </ul>
                                     </li>
+                                    <li>
+                                        <a href="addBook.php">Add</a>
+                                    </li>
+                                    <?php
+                                    } else echo "</ul>";
+                                    ?>
                                     <li>
                                         <a href="category.php">Category</a>
                                         <ul class="submenu">

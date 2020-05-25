@@ -1,11 +1,7 @@
 <?php
 include_once "../model/connect.php";
-//include_once "../Objects/Search.php";
-//include_once "../Objects/searchUser.php";
-//include_once "../model/user.php";
-//include_once "../model/validate.php";
 include_once "../model/modelAdmin.php";
-$connect = connectServer("localhost", "root", "", 3306);
+$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 if (!isset($_SESSION['admin'])) header("Location: login.php");
@@ -97,6 +93,9 @@ if ($result->num_rows == 0) {
                                             <li><a href="searchBookView.php">Search Book</a></li>
                                             <li><a href="searchUser.php">Search User</a></li>
                                         </ul>
+                                    <li>
+                                        <a href="addBook.php">Add</a>
+                                    </li>
                                     </li>
                                     <li>
                                         <a href="category.php">Category</a>
