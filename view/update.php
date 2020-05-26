@@ -216,12 +216,12 @@ if (!isset($_GET['bookID']) || empty($_GET['bookID'])) {
                                     <li>
                                         <a href="category.php">Category</a>
                                         <ul class="submenu">
-                                            <li><a href="blog.html">Trinh Thám</a></li>
-                                            <li><a href="single-blog.html">Tình Cảm</a></li>
-                                            <li><a href="blog.html">Viễn Tưởng</a></li>
-                                            <li><a href="single-blog.html">Khoa Học</a></li>
-                                            <li><a href="blog.html">Triết Học</a></li>
-                                            <li><a href="single-blog.html">Sách Giáo Khoa</a></li>
+                                            <li><a href="category.php">Information Technology</a></li>
+                                            <li><a href="category.php">Law and Social</a></li>
+                                            <li><a href="category.php">Science and Technology</a></li>
+                                            <li><a href="category.php">Education</a></li>
+                                            <li><a href="category.php">Philosophy and Life</a></li>
+                                            <li><a href="category.php">Human History</a></li>
                                         </ul>
                                     </li>
                                     <?php
