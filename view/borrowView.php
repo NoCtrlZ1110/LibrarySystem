@@ -5,7 +5,7 @@ include_once "../Objects/searchBook.php";
 include_once "../Objects/Book.php";
 include_once "../model/timeout.php";
 include_once "../model/user.php";
-$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
+$connect = connectServer("localhost", "root", "", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 $book = new Book($connect, 0);

@@ -1,7 +1,7 @@
 <?php
 include_once "../model/connect.php";
 include_once "../model/user.php";
-$connect = connectServer("localhost", "root", "manhuetvnuk63j", 3306);
+$connect = connectServer("localhost", "root", "", 3306);
 $dbname = "library";
 $connect->select_db($dbname);
 if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['student']['id'], $connect);
@@ -425,10 +425,6 @@ if (isset($_SESSION['student']['id'])) $cartDetail = getInfoCart($_SESSION['stud
 </main>
 <footer class="m-5">
     <!-- Footer Start-->
-
-    <div class="text-center">
-        Template được nhóm tham khảo từ colorlib.com
-    </div>
 
     <!-- Footer End-->
 </footer>
